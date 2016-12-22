@@ -92,11 +92,10 @@ public class PartitionByMurmurHash extends AbstractPartitionAlgorithm implements
 
 	private void generateBucketMap(){
 		hash=Hashing.murmur3_32(seed);//计算一致性哈希的对象
-		for(int i=0;i<count;i++){
-			StringBuilder hashName=new StringBuilder("SHARD-").append(i).append("-NODE-");
+		for(int i=0;i<count;i++){//构造一致性哈希环，用TreeMap表示
+			StringBuilder hashName=new StringBuilder("SHARD-").append(i);
 			for(int n=0,shard=virtualBucketTimes*getWeight(i);n<shard;n++){
-				bucketMap.put(hash.hashUnencodedChars(hashName.append(n)).asInt(),i);
-				hashName.delete(hashName.lastIndexOf("-")+1,hashName.length());
+				bucketMap.put(hash.hashUnencodedChars(hashName.append("-NODE-").append(n)).asInt(),i);
 			}
 		}
 		weightMap=null;
